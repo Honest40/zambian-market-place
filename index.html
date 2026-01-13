@@ -3,338 +3,295 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zambia Marketplace – Advanced</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>ZedMarket 🇿🇲 - User</title>
 <style>
-body{font-family:'Roboto',sans-serif;margin:0;padding:0;background:#f0f4f8;}
-header{background:#007A33;color:white;padding:20px;text-align:center;font-size:26px;font-weight:bold;}
-nav{display:flex;justify-content:center;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-nav button{background:none;border:none;padding:15px 25px;cursor:pointer;font-size:16px;transition:0.3s;}
-nav button:hover{background:#f0f0f0;}
-nav button.active{border-bottom:3px solid #FF6600;font-weight:bold;color:#007A33;}
-.container{max-width:1000px;margin:20px auto;padding:20px;background:white;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);}
-input,textarea,select{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc;font-size:16px;}
-button{background:#FF6600;color:white;padding:12px 25px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;}
-button:hover{background:#e65500;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
-.card{background:#fff;padding:15px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.08);}
-.card img{width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:10px;}
-.rating{color:#FFA500;}
-#notification{position:fixed;top:10px;right:10px;background:#007A33;color:white;padding:15px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;z-index:999;}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999;}
-.modal-content{background:white;padding:30px;border-radius:12px;width:90%;max-width:400px;}
-.badge{padding:3px 8px;border-radius:5px;color:white;font-weight:bold;font-size:12px;}
-.badge-sold{background:#FF0000;}
-.badge-new{background:#007A33;}
-.react-btn{background:none;border:none;font-size:18px;cursor:pointer;margin-right:5px;}
-.comment-box{margin-top:5px;padding:5px;border-top:1px solid #ddd;}
-.comment{padding:3px 5px;margin-bottom:3px;border-radius:5px;background:#f2f2f2;font-size:14px;}
+body{font-family:Arial,sans-serif;margin:0;background:#f2f2f2}
+header{background:#0f2a44;color:#fff;padding:15px;text-align:center;font-size:22px}
+nav{display:flex;justify-content:center;background:#198754}
+nav button{flex:1;padding:10px;color:#fff;border:none;cursor:pointer;font-size:16px}
+nav button.active{background:#0f2a44}
+section{display:none;padding:15px}
+section.active{display:block}
+input,select,textarea,button{width:100%;padding:10px;margin:6px 0;border-radius:5px;border:1px solid #ccc}
+button{background:#198754;color:#fff;cursor:pointer}
+.card{background:#fff;padding:10px;margin:10px 0;border-radius:6px;position:relative;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.card img{width:100%;height:180px;object-fit:cover;border-radius:5px}
+.card .badge{position:absolute;top:10px;right:10px;background:#ffc107;color:#000;padding:4px 8px;border-radius:3px;font-weight:bold}
+.chatBox{height:150px;overflow:auto;background:#fafafa;padding:8px;margin-bottom:5px;border-radius:5px;border:1px solid #ccc}
 </style>
 </head>
 <body>
 
-<div id="notification"></div>
+<header>ZedMarket 🇿🇲</header>
 
-<!-- Login / Signup Modal -->
-<div id="authModal" class="modal">
-  <div class="modal-content">
-    <h2>Welcome to Zambia Marketplace</h2>
-    <div id="loginDiv">
-      <input type="text" id="buyerUsername" placeholder="Enter your username (Buyer)" />
-      <button onclick="loginBuyer()">Login as Buyer</button>
-      <p style="text-align:center;margin:10px 0;">OR</p>
-      <button onclick="showSignup()">Sign Up as Seller</button>
-    </div>
-    <div id="signupDiv" style="display:none;">
-      <input type="text" id="sellerUsername" placeholder="Enter your username (Seller)" />
-      <button onclick="signupSeller()">Sign Up</button>
-      <p style="margin-top:10px;text-align:center;"><a href="#" onclick="showLogin()">Back to Login</a></p>
-    </div>
-  </div>
-</div>
+<!-- LOGIN / REGISTER -->
+<section id="login" class="active">
+<h3>Login / Register</h3>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<input id="phone" placeholder="WhatsApp 260...">
+<button id="registerBtn">Register</button>
+<button id="loginBtn">Login</button>
+</section>
 
-<header>Zambia Marketplace – Advanced</header>
-<nav>
-<button class="active" onclick="switchTab('buy')">Buy</button>
-<button onclick="switchTab('sell')">Sell</button>
+<!-- NAV -->
+<nav id="nav" style="display:none">
+<button class="active" data-tab="home">Home</button>
+<button data-tab="seller">Seller</button>
+<button data-tab="profile">Profile</button>
+<button data-tab="chat">Support</button>
+<button id="logoutBtn">Logout</button>
 </nav>
 
-<div class="container">
-
-<!-- Buy Section -->
-<div id="buy" class="tab-content">
-<h2>Search Products to Buy</h2>
-<input type="text" id="searchProductBuy" placeholder="Search by name, seller or category" oninput="renderProducts('buy')">
-<select id="filterCategoryBuy" onchange="renderProducts('buy')">
-  <option value="">All Categories</option>
-  <option value="Electronics">Electronics</option>
-  <option value="Solar">Solar / Batteries</option>
-  <option value="Services">Services</option>
-  <option value="Farm Produce">Farm Produce</option>
-  <option value="Others">Others</option>
+<!-- HOME -->
+<section id="home">
+<h3>Search & Filter</h3>
+<input type="text" id="search" placeholder="Search by title...">
+<select id="filterType">
+  <option value="">All Types</option>
+  <option value="product">Product</option>
+  <option value="service">Service</option>
 </select>
-<select id="sortPriceBuy" onchange="renderProducts('buy')">
-  <option value="">Sort by</option>
-  <option value="low">Price: Low → High</option>
-  <option value="high">Price: High → Low</option>
-  <option value="rating">Rating: High → Low</option>
+<div id="listings"></div>
+</section>
+
+<!-- SELLER -->
+<section id="seller">
+<h3>Post a Listing</h3>
+<select id="type">
+  <option value="product">Product</option>
+  <option value="service">Service</option>
 </select>
-<div class="grid" id="productGridBuy"></div>
-<div style="margin-top:20px;font-weight:bold;">Total Purchased Amount: ZMW <span id="totalPurchased">0</span></div>
-</div>
+<input id="title" placeholder="Title">
+<input id="price" placeholder="Price or Call">
+<input id="image" type="file" id="fileInput">
+<textarea id="desc" placeholder="Description"></textarea>
+<button id="submitBtn">Submit Listing</button>
 
-<!-- Sell Section -->
-<div id="sell" class="tab-content" style="display:none;">
-<h2>Add Product to Sell</h2>
-<input type="text" id="productNameSell" placeholder="Product Name">
-<input type="number" id="productPriceSell" placeholder="Price (ZMW)">
-<input type="number" id="productQuantitySell" placeholder="Quantity" min="1" value="1">
-<input type="text" id="productLocationSell" placeholder="Location (City/Area)">
-<input type="file" id="productImageUpload">
-<select id="productCategorySell">
-  <option value="Electronics">Electronics</option>
-  <option value="Solar">Solar / Batteries</option>
-  <option value="Services">Services</option>
-  <option value="Farm Produce">Farm Produce</option>
-  <option value="Others">Others</option>
-</select>
-<input type="text" id="sellerContactSell" placeholder="WhatsApp/Phone">
-<button onclick="addProduct()">Add Product</button>
+<h3>Your Listings</h3>
+<div id="myListings"></div>
+</section>
 
-<h2 style="margin-top:30px;">Your Products</h2>
-<input type="text" id="searchProductSell" placeholder="Search your products" oninput="renderProducts('sell')">
-<div class="grid" id="productGridSell"></div>
-<div style="margin-top:20px;font-weight:bold;">Your Total Earnings: ZMW <span id="totalEarnings">0</span></div>
-</div>
+<!-- PROFILE -->
+<section id="profile">
+<h3>Edit Profile</h3>
+<input id="profileName" placeholder="Name">
+<input id="profilePhone" placeholder="WhatsApp 260...">
+<input id="profileLocation" placeholder="Location">
+<button id="saveProfileBtn">Save Profile</button>
+</section>
 
-</div>
+<!-- SUPPORT -->
+<section id="chat">
+<h3>Support Chat</h3>
+<div id="chatBox" class="chatBox"></div>
+<input id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+</section>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
 <script>
-// --- Global Variables ---
-let currentUser = '';
-let currentUserType = ''; // buyer / seller
-const productsKey = 'products';
-const sellersKey = 'sellers';
-let purchaseHistory = [];
+window.addEventListener('load',()=>{
+  const firebaseConfig = {
+    apiKey: "AIzaSyDhRFgn7nXoZlRf-GX7XakwUYrEMFZDgrI",
+    authDomain: "pa-mwera.firebaseapp.com",
+    projectId: "pa-mwera",
+    storageBucket: "pa-mwera.firebasestorage.app",
+    messagingSenderId: "959795010421",
+    appId: "1:959795010421:web:84e1cc1517a5d98598113c"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
 
-// --- Utility ---
-function notify(msg){
-  const n = document.getElementById('notification');
-  n.innerText = msg;
-  n.style.display = 'block';
-  setTimeout(()=>{n.style.display='none'},3000);
-}
+  const loginSection=document.getElementById("login");
+  const nav=document.getElementById("nav");
+  const sections={home:document.getElementById("home"),seller:document.getElementById("seller"),profile:document.getElementById("profile"),chat:document.getElementById("chat")};
 
-function saveProducts(products){
-  localStorage.setItem(productsKey, JSON.stringify(products));
-}
+  const registerBtn=document.getElementById("registerBtn");
+  const loginBtn=document.getElementById("loginBtn");
+  const logoutBtn=document.getElementById("logoutBtn");
 
-function loadProducts(){
-  return JSON.parse(localStorage.getItem(productsKey) || '[]');
-}
+  const submitBtn=document.getElementById("submitBtn");
+  const title=document.getElementById("title");
+  const price=document.getElementById("price");
+  const type=document.getElementById("type");
+  const desc=document.getElementById("desc");
+  const fileInput=document.getElementById("fileInput");
 
-function loadSellers(){
-  return JSON.parse(localStorage.getItem(sellersKey) || '[]');
-}
+  const listings=document.getElementById("listings");
+  const myListings=document.getElementById("myListings");
 
-// --- Login / Signup ---
-function showSignup(){
-  document.getElementById('loginDiv').style.display='none';
-  document.getElementById('signupDiv').style.display='block';
-}
-function showLogin(){
-  document.getElementById('loginDiv').style.display='block';
-  document.getElementById('signupDiv').style.display='none';
-}
+  const profileName=document.getElementById("profileName");
+  const profilePhone=document.getElementById("profilePhone");
+  const profileLocation=document.getElementById("profileLocation");
+  const saveProfileBtn=document.getElementById("saveProfileBtn");
 
-function loginBuyer(){
-  const username = document.getElementById('buyerUsername').value.trim();
-  if(!username){alert('Enter username'); return;}
-  currentUser = username;
-  currentUserType = 'buyer';
-  document.getElementById('authModal').style.display='none';
-  notify(`Logged in as Buyer: ${username}`);
-  renderProducts('buy');
-}
+  const search=document.getElementById("search");
+  const filterType=document.getElementById("filterType");
 
-function signupSeller(){
-  const username = document.getElementById('sellerUsername').value.trim();
-  if(!username){alert('Enter username'); return;}
-  let sellers = loadSellers();
-  if(sellers.includes(username)){alert('Username already exists!'); return;}
-  sellers.push(username);
-  localStorage.setItem(sellersKey, JSON.stringify(sellers));
-  currentUser = username;
-  currentUserType = 'seller';
-  document.getElementById('authModal').style.display='none';
-  notify(`Signed up and logged in as Seller: ${username}`);
-  renderProducts('sell');
-}
+  const chatBox=document.getElementById("chatBox");
+  const chatInput=document.getElementById("chatInput");
 
-// --- Tab Switching ---
-const tabs = document.querySelectorAll('nav button');
-const contents = document.querySelectorAll('.tab-content');
-function switchTab(tabId){
-  contents.forEach(c=>c.style.display='none');
-  document.getElementById(tabId).style.display='block';
-  tabs.forEach(t=>t.classList.remove('active'));
-  event.target.classList.add('active');
-  renderProducts(tabId);
-}
-
-// --- Add Product ---
-function addProduct(){
-  if(currentUserType!=='seller'){alert('Only sellers can add products'); return;}
-  const name = document.getElementById('productNameSell').value.trim();
-  const price = parseFloat(document.getElementById('productPriceSell').value);
-  const quantity = parseInt(document.getElementById('productQuantitySell').value) || 1;
-  const location = document.getElementById('productLocationSell').value.trim() || 'Unknown';
-  const category = document.getElementById('productCategorySell').value;
-  const contact = document.getElementById('sellerContactSell').value.trim();
-  if(!name || isNaN(price) || !contact){alert('Fill all required fields'); return;}
-  
-  const fileInput = document.getElementById('productImageUpload');
-  const reader = new FileReader();
-  reader.onload = function(e){
-    const imageData = e.target.result;
-    let products = loadProducts();
-    products.push({name, price, quantity, category, contact, location, image:imageData, seller:currentUser, rating:0, sold:0, reactions:{like:0,love:0,wow:0}, comments:[]});
-    saveProducts(products);
-    renderProducts('sell');
-    renderProducts('buy');
-    document.getElementById('productNameSell').value='';
-    document.getElementById('productPriceSell').value='';
-    document.getElementById('productQuantitySell').value='1';
-    document.getElementById('productLocationSell').value='';
-    document.getElementById('sellerContactSell').value='';
-    fileInput.value = '';
-    notify('Product added successfully!');
-  }
-  if(fileInput.files[0]) reader.readAsDataURL(fileInput.files[0]);
-  else{
-    let products = loadProducts();
-    products.push({name, price, quantity, category, contact, location, image:'https://via.placeholder.com/200', seller:currentUser, rating:0, sold:0, reactions:{like:0,love:0,wow:0}, comments:[]});
-    saveProducts(products);
-    renderProducts('sell');
-    renderProducts('buy');
-    document.getElementById('productNameSell').value='';
-    document.getElementById('productPriceSell').value='';
-    document.getElementById('productQuantitySell').value='1';
-    document.getElementById('productLocationSell').value='';
-    document.getElementById('sellerContactSell').value='';
-    notify('Product added successfully!');
-  }
-}
-
-// --- Render Products ---
-function renderProducts(section){
-  let products = loadProducts();
-  let search='', filter='', sort='', grid, total=0;
-  if(section==='buy'){
-    search = document.getElementById('searchProductBuy').value.toLowerCase();
-    filter = document.getElementById('filterCategoryBuy').value;
-    sort = document.getElementById('sortPriceBuy').value;
-    grid = document.getElementById('productGridBuy');
-    products = products.filter(p=>p.quantity>0);
-  }else{
-    search = document.getElementById('searchProductSell').value.toLowerCase();
-    filter = document.getElementById('productCategorySell').value;
-    sort = document.getElementById('sortPriceBuy').value;
-    grid = document.getElementById('productGridSell');
-    products = products.filter(p=>p.seller===currentUser);
-  }
-
-  products = products.filter(p=>p.name.toLowerCase().includes(search)||p.seller.toLowerCase().includes(search));
-  if(filter) products = products.filter(p=>p.category===filter);
-
-  if(sort==='low') products.sort((a,b)=>a.price-b.price);
-  if(sort==='high') products.sort((a,b)=>b.price-a.price);
-  if(sort==='rating') products.sort((a,b)=>b.rating-b.rating);
-
-  grid.innerHTML='';
-  products.forEach((p,index)=>{
-    total += (section==='buy'?0:p.sold*p.price);
-    grid.innerHTML+=`
-    <div class="card">
-      <img src="${p.image}">
-      <h3>${p.name} ${p.quantity===0?'<span class="badge badge-sold">Sold Out</span>':'<span class="badge badge-new">In Stock</span>'}</h3>
-      <p>Category: ${p.category}</p>
-      <p>Location: ${p.location}</p>
-      <p>Price: ZMW ${p.price.toFixed(2)}</p>
-      <p>Seller Contact: <a href="https://wa.me/${p.contact}" target="_blank">${p.contact}</a></p>
-      <p>Quantity: ${p.quantity}</p>
-      <p>Rating: <span class="rating">${'★'.repeat(p.rating)}${'☆'.repeat(5-p.rating)}</span>
-      <button onclick="rateProduct(${index},1)">★</button>
-      <button onclick="rateProduct(${index},0)">☆</button></p>
-      ${section==='buy'?`
-        <button onclick="buyProduct(${index})" ${p.quantity===0?'disabled':''}>Buy Now</button>
-        <div style="margin-top:5px;font-size:14px;">
-          React: 
-          <button class="react-btn" onclick="reactProduct(${index},'like')">👍 ${p.reactions.like}</button>
-          <button class="react-btn" onclick="reactProduct(${index},'love')">❤️ ${p.reactions.love}</button>
-          <button class="react-btn" onclick="reactProduct(${index},'wow')">😮 ${p.reactions.wow}</button>
-        </div>
-        <div class="comment-box">
-          <input type="text" placeholder="Add comment..." id="commentInput${index}">
-          <button onclick="addComment(${index})">Comment</button>
-          ${p.comments.map(c=>`<div class="comment"><b>${c.user}:</b> ${c.text}</div>`).join('')}
-        </div>
-        <div style="margin-top:5px;font-size:14px;">Payment Options: MTN Mobile Money, Airtel Money, Zamtel Mobile Money, Bank Transfer</div>
-      `:''}
-      ${section==='sell'?`<p>Total Sold: ${p.sold}, Earnings: ZMW ${(p.sold*p.price).toFixed(2)}</p>`:''}
-    </div>`;
+  // NAVIGATION
+  document.querySelectorAll("#nav button[data-tab]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const tab=btn.getAttribute("data-tab");
+      for(let s in sections){sections[s].style.display="none";}
+      sections[tab].style.display="block";
+      document.querySelectorAll("#nav button").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+    });
   });
 
-  if(section==='buy') document.getElementById('totalPurchased').innerText = purchaseHistory.reduce((a,b)=>a+b.price,0).toFixed(2);
-  else document.getElementById('totalEarnings').innerText = products.reduce((a,b)=>a.sold*b.price+a,0).toFixed(2);
-}
+  // REGISTER
+  registerBtn.onclick=async()=>{
+    if(!email.value||!password.value||!phone.value){return alert("Fill all fields");}
+    try{
+      const cred=await auth.createUserWithEmailAndPassword(email.value,password.value);
+      await db.collection("users").doc(cred.user.uid).set({phone:phone.value,name:"",role:"seller",createdAt:Date.now()});
+      alert("Registered! Now log in.");
+    }catch(e){alert(e.message);}
+  };
 
-// --- Rate Product ---
-function rateProduct(index,value){
-  let products = loadProducts();
-  products[index].rating = value ? 5 : 0;
-  saveProducts(products);
-  renderProducts('buy');
-  renderProducts('sell');
-}
+  // LOGIN
+  loginBtn.onclick=()=>auth.signInWithEmailAndPassword(email.value,password.value).catch(e=>alert(e.message));
+  logoutBtn.onclick=()=>auth.signOut();
 
-// --- Buy Product ---
-function buyProduct(index){
-  let products = loadProducts();
-  const qty = 1;
-  if(products[index].quantity>=qty){
-    products[index].quantity -= qty;
-    products[index].sold += qty;
-    purchaseHistory.push({...products[index], price: products[index].price*qty});
-    saveProducts(products);
-    notify(`You bought "${products[index].name}" for ZMW ${(products[index].price*qty).toFixed(2)}!`);
-    renderProducts('buy');
-    renderProducts('sell');
-  }else{
-    alert('Not enough stock!');
+  // AUTH STATE
+  auth.onAuthStateChanged(user=>{
+    if(user){
+      loginSection.style.display="none";
+      nav.style.display="flex";
+      sections.home.style.display="block";
+      loadListings();
+      loadMyListings();
+      loadProfile();
+      loadChat();
+    }else{
+      loginSection.style.display="block";
+      nav.style.display="none";
+      for(let s in sections){sections[s].style.display="none";}
+    }
+  });
+
+  // SUBMIT LISTING
+  submitBtn.onclick=async()=>{
+    const user=auth.currentUser;
+    if(!user) return alert("Login first");
+    if(!title.value||!price.value||!desc.value) return alert("Fill all fields");
+
+    let imageUrl="";
+    if(fileInput.files[0]){
+      const file=fileInput.files[0];
+      const ref=storage.ref().child(`listings/${user.uid}/${Date.now()}_${file.name}`);
+      await ref.put(file);
+      imageUrl=await ref.getDownloadURL();
+    }
+
+    await db.collection("listings").add({
+      sellerId:user.uid,type:type.value,title:title.value,price:price.value,
+      image:imageUrl,description:desc.value,status:"pending",featured:false,createdAt:Date.now()
+    });
+    alert("Listing submitted!");
+    title.value=""; price.value=""; desc.value=""; fileInput.value="";
+    loadMyListings(); loadListings();
+  };
+
+  // LOAD LISTINGS
+  async function loadListings(){
+    const snap=await db.collection("listings").where("status","==","approved").get();
+    listings.innerHTML="";
+    snap.forEach(doc=>{
+      const d=doc.data();
+      if(d.title.toLowerCase().includes(search.value.toLowerCase())){
+        listings.innerHTML+=`<div class="card">
+          ${d.featured?'<span class="badge">FEATURED</span>':''}
+          <img src="${d.image||'https://via.placeholder.com/300'}">
+          <h4>${d.title}</h4>
+          <p>${d.price} • ${d.type}</p>
+        </div>`;
+      }
+    });
   }
-}
+  search.addEventListener("input",loadListings);
+  filterType.addEventListener("change",loadListings);
 
-// --- React / Comment ---
-function reactProduct(index,type){
-  let products = loadProducts();
-  if(!products[index].reactions) products[index].reactions={like:0,love:0,wow:0};
-  products[index].reactions[type]++;
-  saveProducts(products);
-  renderProducts('buy');
-}
-function addComment(index){
-  const input = document.getElementById(`commentInput${index}`);
-  const text = input.value.trim();
-  if(!text) return;
-  let products = loadProducts();
-  if(!products[index].comments) products[index].comments=[];
-  products[index].comments.push({user:currentUser,text});
-  input.value='';
-  saveProducts(products);
-  renderProducts('buy');
-}
+  // LOAD MY LISTINGS
+  async function loadMyListings(){
+    const user=auth.currentUser;
+    if(!user) return;
+    const snap=await db.collection("listings").where("sellerId","==",user.uid).get();
+    myListings.innerHTML="";
+    snap.forEach(doc=>{
+      const d=doc.data();
+      myListings.innerHTML+=`<div class="card">
+        ${d.status==="pending"?'🔒 Pending':'✅ Approved'}
+        <h4>${d.title}</h4>
+        <button onclick="editListing('${doc.id}','${d.title}','${d.price}','${d.description}')">Edit</button>
+        <button onclick="deleteListing('${doc.id}')">Delete</button>
+      </div>`;
+    });
+  }
+
+  window.editListing=async(id,t,p,descVal)=>{
+    title.value=t; price.value=p; desc.value=descVal;
+    if(confirm("Save changes?")){
+      await db.collection("listings").doc(id).update({title:title.value,price:price.value,description:desc.value,status:"pending"});
+      loadMyListings(); loadListings();
+    }
+  };
+  window.deleteListing=async(id)=>{
+    if(confirm("Delete listing?")){await db.collection("listings").doc(id).delete(); loadMyListings(); loadListings();}
+  };
+
+  // PROFILE
+  async function loadProfile(){
+    const user=auth.currentUser; if(!user) return;
+    const doc=await db.collection("users").doc(user.uid).get();
+    if(doc.exists){
+      const d=doc.data();
+      profileName.value=d.name||"";
+      profilePhone.value=d.phone||"";
+      profileLocation.value=d.location||"";
+    }
+  }
+  saveProfileBtn.onclick=async()=>{
+    const user=auth.currentUser; if(!user) return alert("Login first");
+    await db.collection("users").doc(user.uid).update({name:profileName.value,phone:profilePhone.value,location:profileLocation.value});
+    alert("Profile updated!");
+  };
+
+  // SUPPORT CHAT
+  async function loadChat(){
+    const user=auth.currentUser; if(!user) return;
+    const snap=await db.collection("messages").where("userId","==",user.uid).get();
+    chatBox.innerHTML="";
+    snap.forEach(doc=>{
+      const messages=doc.data().messages||[];
+      messages.forEach(m=>{
+        chatBox.innerHTML+=`<div><b>${m.from==="admin"?"Admin":"You"}:</b> ${m.text}</div>`;
+      });
+    });
+    chatBox.scrollTop=chatBox.scrollHeight;
+  }
+
+  window.sendMessage=async()=>{
+    const user=auth.currentUser; if(!user) return;
+    if(!chatInput.value) return;
+    const ref=db.collection("messages").doc(user.uid);
+    await ref.set({userId:user.uid},{merge:true});
+    await ref.update({messages:firebase.firestore.FieldValue.arrayUnion({from:"user",text:chatInput.value,time:Date.now()})});
+    chatInput.value="";
+    loadChat();
+  };
+
+});
 </script>
-
 </body>
 </html>
